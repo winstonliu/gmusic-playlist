@@ -168,12 +168,12 @@ if len(sys.argv) < 2:
 
 
 # setup the input and output filenames and derive the playlist name
-input_filename = sys.argv[1].decode('utf-8')
+input_filename = sys.argv[1]
 output_filename = os.path.splitext(input_filename)[0]
 output_filename = re.compile('_\d{14}$').sub(u'',output_filename)
 playlist_name = os.path.basename(output_filename)
 
-output_filename += u'_' + unicode(datetime.datetime.now().strftime(
+output_filename += u'_' + str(datetime.datetime.now().strftime(
     '%Y%m%d%H%M%S'))
 log_filename = output_filename + u'.log'
 csv_filename = output_filename + u'.csv'
@@ -292,7 +292,7 @@ for track in tracks:
 total_time = time.time() - start_time
 
 log('===============================================================')
-log(u'Adding '+unicode(len(song_ids))+' found songs to: '+playlist_name)
+log(u'Adding ' + str(len(song_ids))+' found songs to: '+playlist_name)
 log('===============================================================')
 
 # add the songs to the playlist(s)
@@ -303,7 +303,7 @@ while current_playlist <= total_playlists_needed:
     # build the playlist name, add part number if needed
     current_playlist_name = playlist_name
     if total_playlists_needed > 1:
-        current_playlist_name += u' Part ' + unicode(current_playlist)
+        current_playlist_name += u' Part ' + str(current_playlist)
 
     # create the playlist and add the songs
     playlist_id = api.create_playlist(current_playlist_name)
@@ -313,8 +313,8 @@ while current_playlist <= total_playlists_needed:
 
     added_songs = api.add_songs_to_playlist(playlist_id,current_songs)
 
-    log(u' + '+current_playlist_name+u' - '+unicode(len(added_songs))+
-        u'/'+unicode(len(current_songs))+' songs')
+    log(u' + ' + current_playlist_name+u' - ' + str(len(added_songs))+
+        u'/' + str(len(current_songs))+' songs')
 
     # go to the next playlist section
     current_playlist += 1
