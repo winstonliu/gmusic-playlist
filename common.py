@@ -68,7 +68,7 @@ def close_log():
 def log(message, nl = True):
     if nl:
         message += os.linesep
-    sys.stdout.write(message.encode(sys.stdout.encoding, errors='replace'))
+    print(str(message))
     if logfile:
         logfile.write(message)
 
@@ -105,7 +105,7 @@ def get_google_track_details(sample_song = 'one u2'):
 # creates result details from the given track
 def create_result_details(track):
     result_details = {}
-    for key, value in track.iteritems():
+    for key, value in track.items():
         result_details[key] = value
     result_details['songid'] = (track.get('storeId')
         if track.get('storeId') else track.get('id'))
@@ -166,7 +166,7 @@ def create_details_string(details_dict, skip_id = False):
         if len(out_string) != 0:
             out_string += track_info_separator
         try:
-            out_string += handle_quote_output(unicode(details_dict[nfo]))
+            out_string += handle_quote_output(str(details_dict[nfo]))
         except KeyError:
             # some songs don't have info like year, genre, etc
             pass
@@ -176,18 +176,22 @@ def create_details_string(details_dict, skip_id = False):
 def open_api():
     global api
     log('Logging into google music...')
-    # get the password each time so that it isn't stored in plain text
-    password = getpass.getpass(username + '\'s password: ')
     
+    # Attempt to login
     api = Mobileclient()
-    if not api.login(username, password, Mobileclient.FROM_MAC_ADDRESS):
-        log('ERROR unable to login')
-        time.sleep(3)
-        exit()
-        
-    password = None
-    log('Login Successful.')
-    dlog(u'Available track details: '+str(get_google_track_details()))
+    logged_in = api.oauth_login(Mobileclient.FROM_MAC_ADDRESS)
+
+    if not logged_in:
+        log('No oauth credentials found, please authenticate your account!')
+
+        # Performs oauth and stores generated credentials to Appdirs 
+        # 'user_data_dir' by default. oauth only needs to be performed once per 
+        # machine if the credentials are stored, which is the default behavior.
+        authenticated = api.perform_oauth(open_browser=True)
+    else:
+        log('Successfully logged in!')
+
+    dlog(u'Available track details: ' + str(get_google_track_details()))
     return api
 
 # logs out of the google music api
@@ -226,7 +230,7 @@ def log_stats(results):
     log(u'top 3 genres: '+repr(results['genres'].most_common(3)))
     log(u'top 3 artists: '+repr(results['artists'].most_common(3)))
     log(u'top 3 years: '+repr(results['years'].most_common(3)))
-    log(u'playlist playback ratio: '+unicode(results['playback_ratio']))
+    log(u'playlist playback ratio: ' + str(results['playback_ratio']))
 
 # display version and check prerequisites
 log("gmusic-playlist: "+__version__)

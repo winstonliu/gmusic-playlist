@@ -1,7 +1,3 @@
-
-# the username to use
-username = 'john.elkins@gmail.com'
-
 # the separator to use for detailed track information
 track_info_separator = u','
 #track_info_separator = u'\\'

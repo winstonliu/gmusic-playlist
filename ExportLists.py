@@ -36,7 +36,7 @@ def playlist_handler(playlist_name, playlist_description, playlist_tracks):
 
     log('')
     log('============================================================')
-    log(u'Exporting '+ unicode(len(playlist_tracks)) +u' tracks from '
+    log(u'Exporting '+ str(len(playlist_tracks)) +u' tracks from '
         +playlist_name)
     log('============================================================')
 
@@ -81,7 +81,7 @@ def playlist_handler(playlist_name, playlist_description, playlist_tracks):
     # output the stats to the log
     log('')
     log_stats(stats_results)
-    log(u'export skipped: '+unicode(export_skipped))
+    log(u'export skipped: ' + str(export_skipped))
 
     # close the files
     close_log()
